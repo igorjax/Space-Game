@@ -105,3 +105,4 @@ while run:
     back_gr.draw()
     player.draw()
     clock.tick(60)
+print('hello world')
