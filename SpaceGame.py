@@ -48,16 +48,16 @@ class Player(GameSprite): # Класс игрока
 
         # Временное решение чтобы игрок не выходил за экран
         if self.rect.x < 0: 
-            self.rect.x = 700
+            self.rect.x = window_width - player_width * 1.5
         
-        elif self.rect.x>700:
-            self.rect.x = 0
+        elif self.rect.right >= window_width:
+            self.rect.x = 1
         
-        if self.rect.y < 0:
-            self.rect.y = 700
+        if self.rect.top < 0:
+            self.rect.y = window_height - player_heght * 1.5
         
-        elif self.rect.y > 700:
-            self.rect.y = 0
+        elif self.rect.bottom >= window_height:
+            self.rect.y = 1
     
     def get_speed(self): # Метод для задания скорости в зависимости от угла
         if self.angle == 0: # Если угол равен нулю то скорость по Y будет равна максимальной скорости перемещения 
@@ -124,7 +124,7 @@ window = pg.display.set_mode((window_width, window_height))
 # Задний фон, скоро будет изменено
 back_gr = GameSprite(window_width, window_height, 0, 0, background)
 # Создание игрока
-player = Player(player_width, player_heght, player_x, player_y, player_texture)
+player = Player(player_width, player_height, player_x, player_y, player_texture)
 # Создаёт игровой таймер
 clock = pg.time.Clock()
 # Переменная для запуска игрового цикла, флажок
@@ -140,13 +140,13 @@ while run:
         elif e.type == pg.KEYDOWN: # Если клавиша нажата  
             # Если клавиша стрелочка влево
             if e.key == pg.K_LEFT:
-                player.angle_rotate_speed = 3 # Скорость вращения влево равна * градусов 
+                player.angle_rotate_speed = 7 # Скорость вращения влево равна * градусов 
             # Если клавиша стрелочка вправо
             elif e.key == pg.K_RIGHT:
-                player.angle_rotate_speed = -3 # Скорость вращение вправо равна * градусов
+                player.angle_rotate_speed = -7 # Скорость вращение вправо равна * градусов
             # Будет отключено но не выведено если клавиша стрелочка вверх
             elif e.key == pg.K_UP:
-                player.speed = 5 # Изменить максимальную скорость на 5 единиц
+                player.speed = 20 # Изменить максимальную скорость на 5 единиц
         # Если клавиши более не нажаты
         elif e.type == pg.KEYUP:
             # Скорость вращения влево меняется на 0
