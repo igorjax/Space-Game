@@ -3,8 +3,9 @@ import time
 from additionaly import *
 pg.font.init()
 
-
-
+def print_fps():
+    fps = pg.font.Font(None, 30).render(str(round(clock.get_fps())), True,(0,255,0))
+    window.blit(fps, (670, 0))
 class GameSprite(pg.sprite.Sprite):
     def __init__(self, width, height, x_cord, y_cord, picture):
         super().__init__()
@@ -28,57 +29,75 @@ class Player(GameSprite):
         self.image_copy = self.image.copy()
 
     def update(self):
-        self.get_speed()
-        self.rect.x += self.x_speed
-        self.rect.y += self.y_speed
+        
         self.angle = (self.angle + self.angle_rotate_speed)%360
+
+        if self.rect.x < 0:
+            self.rect.x = 700
+        
+        elif self.rect.x>700:
+            self.rect.x = 0
+        
+        if self.rect.y < 0:
+            self.rect.y = 700
+        
+        elif self.rect.y > 700:
+            self.rect.y = 0
+        
         new_image = pg.transform.rotate(self.image_copy, self.angle)
         old_center = self.rect.center
+        
         self.image = new_image
         self.rect = self.image.get_rect()
         self.rect.center = old_center
+        
+        self.get_speed()
+
+        self.rect.x += self.x_speed
+        self.rect.y += self.y_speed
     
     def get_speed(self):
         if self.angle == 0:
             self.y_speed = -self.speed
+            self.x_speed = 0
 
-        elif self.angle > 0 and self.angle <= 45:
+        if self.angle > 0 and self.angle <= 45:
             speed_x = self.speed / 45 * self.angle
-            speed_y = self.speed
             self.x_speed = -speed_x
-            self.y_speed = -speed_y
+            self.y_speed = -self.speed
+
         
-        elif self.angle > 45 and self.angle <= 90:
+        if self.angle > 45 and self.angle <= 90:
             speed_y = self.speed - self.speed / 45 * (self.angle-45)
             self.y_speed = -speed_y
             self.x_speed = -self.speed
         
-        elif self.angle > 90 and self.angle <=135:
+        if self.angle > 90 and self.angle <=135:
             speed_y = self.speed / 45 * (self.angle-90)
             self.x_speed = -self.speed
             self.y_speed = speed_y
         
-        elif self.angle > 135 and self.angle <= 180:
+        if self.angle > 135 and self.angle <= 180:
             speed_x = self.speed - self.speed / 45 * (self.angle-135)
             self.x_speed = -speed_x 
             self.y_speed = self.speed
         
-        elif self.angle > 180 and self.angle <= 225:
+        if self.angle > 180 and self.angle <= 225:
             speed_x = self.speed / 45 * (self.angle - 180)
             self.y_speed = self.speed
             self.x_speed = speed_x
         
-        elif self.angle > 225 and self.angle <= 270:
+        if self.angle > 225 and self.angle <= 270:
             speed_y = self.speed - self.speed / 45 * (self.angle-225)
             self.y_speed = speed_y
             self.x_speed = self.speed
         
-        elif self.angle > 270 and self.angle <= 315:
+        if self.angle > 270 and self.angle <= 315:
             speed_y = self.speed / 45 * (self.angle-270)
             self.x_speed = self.speed
             self.y_speed = -speed_y
         
-        elif self.angle > 315 and self.angle <= 360:
+        if self.angle > 315 and self.angle <= 360:
             speed_x = self.speed - self.speed / 45 * (self.angle - 315)
             self.y_speed = -self.speed
             self.x_speed = speed_x
@@ -126,4 +145,5 @@ while run:
     back_gr.draw()
     #player.print_statistic()
     player.draw()
+    print_fps()
     clock.tick(60)
