@@ -140,10 +140,17 @@ while run:
         elif e.type == pg.KEYDOWN: # Если клавиша нажата  
             # Если клавиша стрелочка влево
             if e.key == pg.K_LEFT:
+<<<<<<< HEAD
                 player.angle_rotate_speed = 7 # Скорость вращения влево равна * градусов 
             # Если клавиша стрелочка вправо
             elif e.key == pg.K_RIGHT:
                 player.angle_rotate_speed = -7 # Скорость вращение вправо равна * градусов
+=======
+                player.angle_rotate_speed = 3 # Скорость вращения влево равна 5 градусов 
+            # Если клавиша стрелочка вправо
+            elif e.key == pg.K_RIGHT:
+                player.angle_rotate_speed = -3 # Скорость вращение вправо равна 5 градусов
+>>>>>>> parent of e9c29e9 (V 0.3)
             # Будет отключено но не выведено если клавиша стрелочка вверх
             elif e.key == pg.K_UP:
                 player.speed = 20 # Изменить максимальную скорость на 5 единиц
