@@ -124,7 +124,7 @@ window = pg.display.set_mode((window_width, window_height))
 # Задний фон, скоро будет изменено
 back_gr = GameSprite(window_width, window_height, 0, 0, background)
 # Создание игрока
-player = Player(50, 50, 500, 500, player_texture)
+player = Player(player_width, player_heght, player_x, player_y, player_texture)
 # Создаёт игровой таймер
 clock = pg.time.Clock()
 # Переменная для запуска игрового цикла, флажок
@@ -140,10 +140,10 @@ while run:
         elif e.type == pg.KEYDOWN: # Если клавиша нажата  
             # Если клавиша стрелочка влево
             if e.key == pg.K_LEFT:
-                player.angle_rotate_speed = 5 # Скорость вращения влево равна 5 градусов 
+                player.angle_rotate_speed = 3 # Скорость вращения влево равна 5 градусов 
             # Если клавиша стрелочка вправо
             elif e.key == pg.K_RIGHT:
-                player.angle_rotate_speed = -5 # Скорость вращение вправо равна 5 градусов
+                player.angle_rotate_speed = -3 # Скорость вращение вправо равна 5 градусов
             # Будет отключено но не выведено если клавиша стрелочка вверх
             elif e.key == pg.K_UP:
                 player.speed = 5 # Изменить максимальную скорость на 5 единиц
