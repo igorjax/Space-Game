@@ -10,6 +10,7 @@ def print_fps(): # Выводит количество фпс на экран
 class GameSprite(pg.sprite.Sprite): # Класс неподвижного объекта
     def __init__(self, width, height, x_cord, y_cord, picture):
         super().__init__()
+        
         self.image = pg.transform.scale(pg.image.load(picture), (width, height)) # Создаёт текстуру персонажу
         self.rect = self.image.get_rect() # Задаёт квадрат
         self.rect.x = x_cord # Задаёт координату X
@@ -18,6 +19,7 @@ class GameSprite(pg.sprite.Sprite): # Класс неподвижного объ
     def draw(self): # Рисует объект на экране
         window.blit(self.image, (self.rect.x, self.rect.y))
         return window
+
 
 class Player(GameSprite): # Класс игрока
     def __init__(self, width, height, x_cord, y_cord, picture):
@@ -47,6 +49,7 @@ class Player(GameSprite): # Класс игрока
         self.rect.y += self.y_speed # Обновление координаты Y в зависимости от скорости
 
         # Временное решение чтобы игрок не выходил за экран
+        '''
         if self.rect.x < 0: 
             self.rect.x = window_width - player_width * 1.5
         
@@ -57,7 +60,7 @@ class Player(GameSprite): # Класс игрока
             self.rect.y = window_height - player_height * 1.5
         
         elif self.rect.bottom >= window_height:
-            self.rect.y = 1
+            self.rect.y = 1''' # Оставил на всякий случай
     
     def get_speed(self): # Метод для задания скорости в зависимости от угла
         if self.angle == 0: # Если угол равен нулю то скорость по Y будет равна максимальной скорости перемещения 
@@ -119,12 +122,15 @@ class Player(GameSprite): # Класс игрока
         window.blit(angle, (0, 0)) # Выводит текст на экран по координате
         window.blit(speed_x, (0, 20))
         window.blit(speed_y, (0, 40))
+
 # Дальше основы создание окна
 window = pg.display.set_mode((window_width, window_height))
 # Задний фон, скоро будет изменено
-back_gr = GameSprite(window_width, window_height, 0, 0, background)
+back_gr = GameSprite(back_width, back_height, 0, 0, background)
 # Создание игрока
 player = Player(player_width, player_height, player_x, player_y, player_texture)
+# Тест объект
+Test_object = GameSprite(600, 500, 1200, 800, 'planet1.png')
 # Создаёт игровой таймер
 clock = pg.time.Clock()
 # Переменная для запуска игрового цикла, флажок
@@ -140,14 +146,14 @@ while run:
         elif e.type == pg.KEYDOWN: # Если клавиша нажата  
             # Если клавиша стрелочка влево
             if e.key == pg.K_LEFT:
-                player.angle_rotate_speed = 7 # Скорость вращения влево равна * градусов 
+                player.angle_rotate_speed = 3 # Скорость вращения влево равна * градусов 
             # Если клавиша стрелочка вправо
             elif e.key == pg.K_RIGHT:
-                player.angle_rotate_speed = -7 # Скорость вращения влево равна 5 градусов 
+                player.angle_rotate_speed = -3 # Скорость вращения влево равна * градусов 
             # Если клавиша стрелочка вправо
                 # Будет отключено но не выведено если клавиша стрелочка вверх
             elif e.key == pg.K_UP:
-                player.speed = 20 # Изменить максимальную скорость на 5 единиц
+                player.speed = 10 # Изменить максимальную скорость на * единиц
         # Если клавиши более не нажаты
         elif e.type == pg.KEYUP:
             # Скорость вращения влево меняется на 0
@@ -163,14 +169,15 @@ while run:
                 player.speed = 0
     # Обновление экрана               
     pg.display.update()
-    # Вызов функции обновление игрока
+    # Вызов функций обновления
     player.update()
     # Отрисовка заднего фона
     back_gr.draw()
     # Отображение статистики
     #player.print_statistic()
-    # Рисует игрока
+    # Рисует все объекты
     player.draw()
+    Test_object.draw()
     # Показывает количество кадров на данный момент
     print_fps()
     # Вертикальная синхронизация

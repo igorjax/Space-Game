@@ -12,3 +12,6 @@ player_height = 200 # Высота объекта игрок
 player_x = window_width//2 - player_width//2 # Координата X игрока
 player_y = window_height//2 - player_height//2 # Координата Y игрока
 player_texture = 'player.png' # Текстура игрока
+# Параметры уровня
+back_width = 2000
+back_height = 3000
