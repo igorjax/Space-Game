@@ -3,7 +3,7 @@
 window_width = 700
 window_height = 600
 # Фон игры
-background = 'GameBackGround.png'
+background = 'GameBackGround.jpg'
 
 # Параметры игрока
 maxspeed = 5 # Максимальная скорость игрока
@@ -13,5 +13,5 @@ player_x = window_width//2 - player_width//2 # Координата X игрок
 player_y = window_height//2 - player_height//2 # Координата Y игрока
 player_texture = 'player.png' # Текстура игрока
 # Параметры уровня
-back_width = 2000
-back_height = 3000
+back_width = window_width
+back_height = window_height
