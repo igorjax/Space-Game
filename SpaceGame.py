@@ -3,14 +3,17 @@ import time # Импорт встроенной библиотеки Python вр
 from additionaly import * # Импорт доп настроек из отдельного модуля
 pg.font.init() # Конструктор текстов Pygame
 
+#main_font = pg.font.SysFont()
+simple_font = pg.font.Font(None, 35)
 def print_fps(): # Выводит количество фпс на экран
-    fps = pg.font.Font(None, 30).render(str(round(clock.get_fps())), True,(0,255,0))
+    fps = simple_font.render(str(round(clock.get_fps())), True,(0,255,0))
     window.blit(fps, (670, 0))
-def print_cords(obj):
+
+def print_cords(obj): # Показывает на экране расположение объекта по отношению к экрану
     obj_x = obj.rect.x
     obj_y = obj.rect.y
-    obj_x_t = pg.font.Font(None, 40).render(str(obj_x), True, (0, 255, 255))
-    obj_y_t = pg.font.Font(None, 40).render(str(obj_y), True, (0, 255, 255))
+    obj_x_t = simple_font.render(str(obj_x), True, (0, 255, 255))
+    obj_y_t = simple_font.render(str(obj_y), True, (0, 255, 255))
     window.blit(obj_x_t, (0, 90))
     window.blit(obj_y_t, (0, 120))
 
@@ -39,22 +42,24 @@ class Player(GameSprite): # Класс игрока
         self.angle = 0 # Угол объекта
         self.angle_rotate_speed = 0 # Скорость вращения
         self.image_copy = self.image.copy() # Дополнительная картинка что бы основная не ломалась при вращении
-        all_sprites.remove(self)
+        all_sprites.remove(self) # Мне было лень искать другие пути
+
+    
 
     def update(self): # Метод обновляющий положение персонажа
         
+        if main_game:
+            self.angle = (self.angle + self.angle_rotate_speed)%360 # Изменение угла (вращение)
         
-        self.angle = (self.angle + self.angle_rotate_speed)%360 # Изменение угла (вращение)
+            self.get_speed() # Метод для задания скорости в зависимости от угла
         
-        self.get_speed() # Метод для задания скорости в зависимости от угла
+            new_image = pg.transform.rotate(self.image_copy, self.angle) # Создание картинки объекта после вращения
         
-        new_image = pg.transform.rotate(self.image_copy, self.angle) # Создание картинки объекта после вращения
+            old_center = self.rect.center # "Старый центр" для уравнивания объекта при вращении
         
-        old_center = self.rect.center # "Старый центр" для уравнивания объекта при вращении
-        
-        self.image = new_image # Замена картинки на обновлённую
-        self.rect = self.image.get_rect() # Обновление квадрата персонажа
-        self.rect.center = old_center # Смена координаты центра для уравнивания
+            self.image = new_image # Замена картинки на обновлённую
+            self.rect = self.image.get_rect() # Обновление квадрата персонажа
+            self.rect.center = old_center # Смена координаты центра для уравнивания
         
         #self.rect.x += self.x_speed # Обновление координаты X в зависимости от скорости
         #self.rect.y += self.y_speed # Обновление координаты Y в зависимости от скорости
@@ -124,68 +129,118 @@ class Player(GameSprite): # Класс игрока
 # Все спрайты
 all_sprites = pg.sprite.Group()
 
-# Дальше основы создание окна
-window = pg.display.set_mode((window_width, window_height))
-# Задний фон
-back = pg.transform.scale(pg.image.load(background),(back_width, back_height))
+def create_planets():
+    Test_object = GameSprite(600, 500, 1220, 900, 'images/planet1.png')
 
-Test_object = GameSprite(600, 500, 1220, 900, 'planet1.png')
+# Дальше основы, создание окна
+window = pg.display.set_mode((window_width, window_height))
+create_planets()
+# Задний фон
+back = pg.transform.scale(pg.image.load(background),(window_width, window_height))
+shift = 50
 
 # Создание игрока
-player = Player(player_width, player_height, player_x, player_y, player_texture)
+player = Player(player_width, player_height, player_x, player_y, player_img)
 # Создаёт игровой таймер
 clock = pg.time.Clock()
 # Переменная для запуска игрового цикла, флажок
 run = True
+# Переменные для запуска мини игр - основной игры
+main_game = False
 # Игровой цикл
 while run:
     # Обработчик событий
-    for e in pg.event.get():
-        # Обрабатывает выход
-        if e.type == pg.QUIT:
-            run = False # Меняет флажок для завершения цикла
-        # Обрабатчик нажатий на клавиши
-        elif e.type == pg.KEYDOWN: # Если клавиша нажата  
-            # Если клавиша стрелочка влево
-            if e.key == pg.K_LEFT:
-                player.angle_rotate_speed = 3 # Скорость вращения влево равна * градусов 
-            # Если клавиша стрелочка вправо
-            elif e.key == pg.K_RIGHT:
-                player.angle_rotate_speed = -3 # Скорость вращения влево равна * градусов 
-            # Если клавиша стрелочка вправо
-                # Будет отключено но не выведено если клавиша стрелочка вверх
-            elif e.key == pg.K_UP:
-                player.speed = 10 # Изменить максимальную скорость на * единиц
-        # Если клавиши более не нажаты
-        elif e.type == pg.KEYUP:
-            # Скорость вращения влево меняется на 0
-            if e.key == pg.K_LEFT:
-                if player.angle_rotate_speed > 0:
-                    player.angle_rotate_speed = 0
-            # Скорость вращение вправо меняется на 0
-            elif e.key == pg.K_RIGHT:
-                if player.angle_rotate_speed < 0:
-                    player.angle_rotate_speed = 0
-            # Максимальная скорость равна 0
-            elif e.key == pg.K_UP:
-                player.speed = 0
+    if not main_game:
+        for e in pg.event.get():
+            # Обрабатывает выход из игры
+            if e.type == pg.QUIT:
+                run = False # Меняет флажок для завершения цикла
+            if e.type == pg.KEYDOWN:
+                if e.key == pg.K_1:
+                    main_game = True
+        window.fill((0, 0, 0))        
     
     # Обновление экрана               
     pg.display.update()
-    # Вызов функций обновления
-    all_sprites.update()
-    player.update()
+    
+    if main_game:
+        for e in pg.event.get():
+            
+            # Обрабатывает выход из игры
+            if e.type == pg.QUIT:
+                run = False # Меняет флажок для завершения цикла
+            
+            # Обрабатчик нажатий на клавиши
+            if e.type == pg.KEYDOWN: # Если клавиша нажата  
+            
+                # Если клавиша стрелочка влево
+                if e.key == pg.K_LEFT:
+                    player.angle_rotate_speed = 3 # Скорость вращения влево равна * градусов 
+            
+                # Если клавиша стрелочка вправо
+                elif e.key == pg.K_RIGHT:
+                    player.angle_rotate_speed = -3 # Скорость вращения влево равна * градусов 
+            
+                # Если клавиша стрелочка вправо
+                    # Будет отключено но не выведено если клавиша стрелочка вверх
+                
+                elif e.key == pg.K_UP:
+                    player.speed = player_speed # Изменить максимальную скорость на * единиц
 
-    for s in all_sprites:
-            s.rect.y -= player.y_speed
-            s.rect.x -= player.x_speed
-    # Отображение статистики
-    player.print_statistic()
-    # Рисует все объекты
-    window.blit(back, (0, 0))
-    all_sprites.draw(window)  
-    player.draw()
-    # Показывает количество кадров на данный момент
+                if e.key == pg.K_2:
+                    main_game = False
+                
+                elif e.key == pg.K_ESCAPE:
+                    run = False
+
+                if e.key == pg.K_r:
+                    for obj in all_sprites:
+                        obj.kill()
+                    player.angle = 0
+                    player.speed_x, player.speed_y = 0, 0
+                    create_planets()
+            # Если клавиши более не нажаты
+            elif e.type == pg.KEYUP:
+            
+                # Скорость вращения влево меняется на 0
+            
+                if e.key == pg.K_LEFT:
+                    if player.angle_rotate_speed > 0:
+                        player.angle_rotate_speed = 0
+            
+                # Скорость вращение вправо меняется на 0
+                elif e.key == pg.K_RIGHT:
+                    if player.angle_rotate_speed < 0:
+                        player.angle_rotate_speed = 0
+            
+                # Максимальная скорость равна 0
+                elif e.key == pg.K_UP:
+                    player.speed = 0
+    
+        # Вызов функций обновления
+        all_sprites.update()
+        player.update()
+        
+        # Перемещение всех объектов по отношению к игроку
+        for s in all_sprites:
+                s.rect.y -= player.y_speed
+                s.rect.x -= player.x_speed
+        
+        # Отображение фона
+        shift -= player.x_speed
+        local_shift_x = shift % window_width
+
+
+        window.blit(back, (local_shift_x, 0))
+        if local_shift_x != 0:
+            window.blit(back, (local_shift_x - window_width, 0))
+  
+        # Отображение статистики
+        player.print_statistic()
+        # Рисует все объекты
+        all_sprites.draw(window)  
+        player.draw()
+        # Показывает количество кадров на данный момент
     print_fps()
     # Вертикальная синхронизация
     clock.tick(60)
