@@ -14,5 +14,9 @@ player_y = window_height//2 - player_height//2 # Координата Y игро
 player_img = 'images/player.png' # Текстура игрока
 player_speed = 5 # Скорость игрока
 
-# Параметры Планета 1
-#planet_img =  
+# :)
+easter = 'images/easter_egg.png'
+# Ключ
+key_img = 'images/key.png'
+# Части корабля
+ship_part_1_img = 'images/ShipPart1.png'
